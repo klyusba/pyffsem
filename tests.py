@@ -10,3 +10,16 @@ def test1():
     assert r <= m
     b = codec.decrypt(r)
     assert a == b
+
+
+def test_set():
+    key = b'16byte secretkey'
+    m = 256
+
+    codec = FFSEM(key, max_num=m)
+    v = set()
+    for i in range(m):
+        a = codec.encrypt(i)
+        v.add(a)
+        assert codec.decrypt(a) == i
+    assert len(v) == m

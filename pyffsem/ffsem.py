@@ -21,18 +21,18 @@ class FFSEM:
         return int.from_bytes(self.cipher.encrypt(b), byteorder='big', signed=False)
 
     def encrypt(self, a: int) -> int:
-        if a > self.max_num:
+        if a >= self.max_num:
             raise ValueError(f'Value must be less then {self.max_num}')
 
         l, r = divmod(a, 1 << self._base)
-        for i in range(self.rounds):
-            b = (r << self.cipher.block_size * 8 - self._base) + (i + 1)
+        for i in range(1, self.rounds+1):
+            b = (r << self.cipher.block_size * 8 - self._base) + i
             e = self._pfr(b)
             l, r = r, l ^ (e >> self.cipher.block_size * 8 - self._base)
         return (l << self._base) + r
 
     def decrypt(self, a: int) -> int:
-        if a > self.max_num:
+        if a >= self.max_num:
             raise ValueError(f'Value must be less then {self.max_num}')
 
         l, r = divmod(a, 1 << self._base)
